@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Graph {
     private HashMap<Node, List<Edge>> adjacencyList;
@@ -35,12 +33,24 @@ public class Graph {
 
 
     public void printGraph() {
-        for (Node node : adjacencyList.keySet()) {
-            System.out.print(node + " -> ");
-            for (Edge edge : adjacencyList.get(node)) {
-                System.out.print(edge.GetTo() + "(" + edge.GetWeight()+"), ");
+        // Sort nodes in descending order of the number of edges
+        List<Node> sortedNodes = new ArrayList<>(adjacencyList.keySet());
+
+        //Collections.sort(sortedNodes, Comparator.comparing(Node::getName)); //Alphabetical order
+        sortedNodes.sort((node1, node2) -> Integer.compare(adjacencyList.get(node2).size(), adjacencyList.get(node1).size())); //Edges order
+
+        for (Node node : sortedNodes) {
+            int edgeCount = adjacencyList.get(node).size();
+            System.out.print(node + " (" + edgeCount + " edges) -> ");
+
+            // Sort edges alphabetically by the destination node's name
+            List<Edge> sortedEdges = new ArrayList<>(adjacencyList.get(node));
+            sortedEdges.sort(Comparator.comparing(Edge::GetTo));
+
+            for (Edge edge : sortedEdges) {
+                System.out.print(edge.GetTo() + "(" + edge.GetWeight() + "), ");
             }
-            System.out.println();
+            System.out.println("\n");
         }
     }
 }
