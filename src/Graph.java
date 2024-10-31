@@ -52,5 +52,62 @@ public class Graph {
             }
             System.out.println("\n");
         }
+        System.out.println("-------------------------------End------------------------------- \n");
     }
+
+    // Method to check if the graph is connected using the DFS (depth first search) method from Lec16
+    public boolean isConnected() {
+        if (adjacencyList.isEmpty()) {
+            System.out.println("The graph is empty.");
+            return true;
+        }
+
+        Set<Node> visitedNodes = new HashSet<>();
+        Node startNode = adjacencyList.keySet().iterator().next(); // Start from any node
+        System.out.println("Starting connectivity check from node: " + startNode.getName());
+
+        // Using DFS (depth first search) traversal code
+        visitDepthFirst(startNode, visitedNodes);
+
+        // Display all visited nodes
+        System.out.print("Visited nodes: ");
+        for (Node node : visitedNodes) {
+            System.out.print(node.getName() + " - ");
+        }
+        System.out.println();
+
+        boolean isConnected = ( visitedNodes.size() == adjacencyList.size() );
+        if (isConnected) {
+            System.out.println("The graph is connected.");
+        } else {
+            System.out.println("The graph is NOT connected.");
+            System.out.println("Unvisited nodes:");
+            for (Node node : adjacencyList.keySet()) {
+                if (!visitedNodes.contains(node)) {
+                    System.out.println(" - " + node.getName());
+                }
+            }
+        }
+
+        return isConnected;
+    }
+
+    // Depth first search from Lec16 pdf
+    private void visitDepthFirst(Node v, Set<Node> visited) {
+        if (visited.contains(v)) return;
+
+        System.out.println("Visiting node: " + v.getName());
+        visited.add(v);
+
+        for (Edge e : adjacencyList.get(v)) {
+            Node neighbor = e.to;
+            if (!visited.contains(neighbor)) {
+                System.out.println("Visited, moving to neighbor: " + neighbor.getName());
+                visitDepthFirst(neighbor, visited);
+            } else {
+                System.out.println("Already visited neighbor: " + neighbor.getName());
+            }
+        }
+    }
+
 }
