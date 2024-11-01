@@ -19,8 +19,8 @@ public class Main {
         //g.printGraph();
         //boolean connected = g.isConnected();
 
-        g.exclusiveGraph();
-        g.printGroups();
+        Graph groups = g.createExclusiveGraph();
+        groups.printGraph();
     }
 
     static ArrayList<String> loadStrings(String f){

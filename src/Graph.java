@@ -22,6 +22,19 @@ public class Graph {
         return newNode;
     }
 
+    // Methode, to create Node and adds it to the AdjacencyList
+    public void createNode(String name) {
+
+        // is there an exisiting Node?
+        for (Node node : adjacencyList.keySet()) {
+            return;
+        }
+        // Node is not exiting, Node is created
+        Node newNode = new Node(name);
+        adjacencyList.put(newNode, new ArrayList<>());
+        return;
+    }
+
     // Method to add a Edge
     public void addEdge(String from, String to, int weight) {
         Node fromNode = getOrCreateNode(from);
@@ -110,14 +123,14 @@ public class Graph {
     }
 
 
-    public void exclusiveGraph() {
+    public void divideGraphIntoGroups() {
         // Sort nodes in descending order of the number of edges
         List<Node> sortedNodes = new ArrayList<>(adjacencyList.keySet());
         sortedNodes.sort((node1, node2) -> Integer.compare(adjacencyList.get(node2).size(), adjacencyList.get(node1).size()));
 
         int currentGroup = 1;
         sortedNodes.get(0).setGroup(currentGroup);
-        System.out.println(sortedNodes.get(0).getName() +" "+ sortedNodes.get(0).getGroup());
+        //System.out.println(sortedNodes.get(0).getName() +" "+ sortedNodes.get(0).getGroup());
 
         for (int i = 1; i < sortedNodes.size(); i++) {
             int group = 1;
@@ -125,7 +138,7 @@ public class Graph {
                 group++;
             }
             sortedNodes.get(i).setGroup(group);
-            System.out.println(sortedNodes.get(i).getName() +" "+ sortedNodes.get(i).getGroup());
+            //System.out.println(sortedNodes.get(i).getName() +" "+ sortedNodes.get(i).getGroup());
         }
     }
 
@@ -161,6 +174,82 @@ public class Graph {
         }
         return true;
     }
+
+    //generate the graph with Groups as Nodes and Edges the sum of Students between the groups
+    public Graph createExclusiveGraph() {
+        // First, divide the nodes in the original graph into groups
+        divideGraphIntoGroups();
+
+        Graph newGraph = new Graph();
+
+        // Track groups that have already been added as nodes in the new graph
+        Map<Integer, Node> groupNodes = new HashMap<>();
+
+        //Create Group Nodes
+        for (Node node : adjacencyList.keySet()) {
+            int group = node.getGroup();
+
+            // Check if the group node already exists in the new graph
+            if (!groupNodes.containsKey(group)) {
+                // Create a new node for this group in the new graph
+                Node groupNode = new Node(Integer.toString(group));
+                newGraph.createNode(groupNode.getName());
+                newGraph.getOrCreateNode(groupNode.getName()).setGroup(group); //
+                groupNodes.put(group, groupNode);
+            }
+        }
+
+        // Calculate Edges between Groups
+        List<Integer> processedGroups = new ArrayList<>();
+        for (int group1 : groupNodes.keySet()) {
+            for (int group2 : groupNodes.keySet()) {
+                if (group1 < group2 && !processedGroups.contains(group2)) {
+                    // use helper method to calculate NumOfStudents
+                    int numberOfConnections = calculateStudentsBetweenGroups(group1, group2);
+
+                    // add only Edge, when there is min. 1 Connection
+                    if (numberOfConnections > 0) {
+                        newGraph.addEdge(Integer.toString(group1), Integer.toString(group2), numberOfConnections);
+                        newGraph.addEdge(Integer.toString(group2), Integer.toString(group1), numberOfConnections);
+                    }
+                }
+            }
+            processedGroups.add(group1);
+        }
+
+        return newGraph;
+
+    }
+
+    //helper method to calculate The weight between two groups
+    private int calculateStudentsBetweenGroups(int group1, int group2) {
+        List<Node> group1Nodes = new ArrayList<>();
+        List<Node> group2Nodes = new ArrayList<>();
+
+        //iterate through nodes to store groups
+        for (Node node : adjacencyList.keySet()) {
+            if (node.getGroup() == group1) {
+                group1Nodes.add(node);
+            } else if (node.getGroup() == group2) {
+                group2Nodes.add(node);
+            }
+        }
+
+        // Calculate, how many students are between these two groups
+        int numberOfStudents = 0;
+        for (Node node1 : group1Nodes) {
+            for (Edge edge : adjacencyList.get(node1)) {
+                if (group2Nodes.contains(edge.getToNode())) {
+                    numberOfStudents+= edge.getWeight();
+                }
+            }
+        }
+        return numberOfStudents;
+
+    }
+
+
+
 
 
 
