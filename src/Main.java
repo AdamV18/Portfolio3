@@ -5,22 +5,50 @@ import java.util.*;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //Graph g=new EdgeGraph();
-        //Graph g = new AdjListGraph();
-        Graph g=new Graph();
-        //Graph g=new MatrixGraph();
 
-        //   for(String s: loadStrings("src\\combi.txt")){
+        //Task 1 - Generate Graph
+        Graph graphCourse=new Graph();
+
         for(String s: loadStrings("combi.txt")){
             String[] a= s.split(" , ");
-            g.addEdge(a[0],a[1],Integer.parseInt(a[2]));
-            g.addEdge(a[1],a[0],Integer.parseInt(a[2]));
+            graphCourse.addEdge(a[0],a[1],Integer.parseInt(a[2]));
+            graphCourse.addEdge(a[1],a[0],Integer.parseInt(a[2]));
         }
         //g.printGraph();
+
+        //Task 2 - Is Graph connected
         //boolean connected = g.isConnected();
 
-        Graph groups = g.createExclusiveGraph();
-        print(g, groups);
+        //Task 3 - Find Groups
+        Graph groups = graphCourse.createExclusiveGraph();
+        //printGroup(groups, graphCourse);
+
+        //Task 4 - Find Timeslots
+        Graph bestPathGraph = null;
+        int minimumWeight = Integer.MAX_VALUE;
+        int startGroup = -1;
+
+        // to calculate the path for each node as start Node -> find best solution
+        for (Node startNode : groups.getAdjacencyList().keySet()) {
+            Graph pathGraph = groups.calculatePathGraph(startNode);
+
+            int pathWeight = pathGraph.calculatePathWeight();
+            System.out.println("Startgroup " + startNode.getGroup() + " has a weight of " + pathWeight);
+
+            if (pathWeight < minimumWeight) {
+                minimumWeight = pathWeight;
+                bestPathGraph = pathGraph;
+                startGroup = startNode.getGroup();
+            }
+        }
+
+        // Print out the best solution
+        if (bestPathGraph != null) {
+            System.out.println("Path with the less consecutive time slots (Students: " + minimumWeight + ", StartGroup: " + startGroup + ")");
+            printPath(bestPathGraph, graphCourse,startGroup);
+        } else {
+            System.out.println("No Path found.");
+        }
     }
 
     static ArrayList<String> loadStrings(String f){
@@ -39,7 +67,8 @@ public class Main {
         return list;
     }
 
-    public static void print(Graph graphCourse, Graph exclusiveGraph) {
+    //Print Method to print the Found Groups, this was genereted by ChatGPT
+    public static void printGroup(Graph graphCourse, Graph exclusiveGraph) {
         // Map to store subjects by group from the original graph (graphCourse)
         Map<Integer, List<String>> subjectsByGroup = new HashMap<>();
 
@@ -75,6 +104,57 @@ public class Main {
         }
 
     }
+
+    //Print Method to print the final Path, this was genereted by ChatGPT
+    public static void printPath(Graph pathGraph, Graph kursGraph, int startGroupId) {
+        // Map to store subjects by group from kursGraph
+        Map<Integer, List<String>> subjectsByGroup = new HashMap<>();
+
+        // Populate the map with group IDs and corresponding subjects from kursGraph
+        for (Node node : kursGraph.getAdjacencyList().keySet()) {
+            int group = node.getGroup();
+            subjectsByGroup.putIfAbsent(group, new ArrayList<>());
+            subjectsByGroup.get(group).add(node.getName());
+        }
+
+        // Find the starting node in pathGraph based on the startGroupId
+        Node currentNode = pathGraph.getNodeByName(String.valueOf(startGroupId));
+        if (currentNode == null) {
+            System.out.println("Starting group not found in the path graph.");
+            return;
+        }
+
+        System.out.println("Path Graph with subjects (starting from Group " + startGroupId + "):");
+
+        // Traverse the path graph from the start node
+        while (currentNode != null) {
+            int groupId = Integer.parseInt(currentNode.getName());
+            List<String> subjects = subjectsByGroup.getOrDefault(groupId, new ArrayList<>());
+
+            // Print the current group and its subjects
+            System.out.print("Group " + groupId + " (" + subjects + ")");
+
+            // Get the next edge (if it exists) to move to the next group
+            List<Edge> edges = pathGraph.getAdjacencyList().get(currentNode);
+            if (edges != null && !edges.isEmpty()) {
+                Edge edge = edges.get(0); // Get the single edge to the next group in the path
+                Node nextNode = edge.getToNode();
+                System.out.print(" --- " + edge.getWeight() + " ---> ");
+                currentNode = nextNode; // Move to the next node
+            } else {
+                // If there are no more edges, we've reached the end
+                currentNode = null;
+            }
+
+            System.out.println(); // New line for each group
+
+        }
+        System.out.println("Total weight of the path: " + pathGraph.calculatePathWeight());
+    }
+
+
+
+
 
 
 
