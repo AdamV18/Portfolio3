@@ -248,9 +248,7 @@ public class Graph {
 
     }
 
-
-
-
-
-
+    public HashMap<Node, List<Edge>> getAdjacencyList() {
+        return adjacencyList;
+    }
 }
