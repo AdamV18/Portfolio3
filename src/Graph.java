@@ -41,14 +41,14 @@ public class Graph {
 
         for (Node node : sortedNodes) {
             int edgeCount = adjacencyList.get(node).size();
-            System.out.print(node + " (" + edgeCount + " edges) -> ");
+            System.out.print(node + " (" + edgeCount + " edges, group " + node.getGroup() + " ) -> ");
 
             // Sort edges alphabetically by the destination node's name
             List<Edge> sortedEdges = new ArrayList<>(adjacencyList.get(node));
-            sortedEdges.sort(Comparator.comparing(Edge::GetTo));
+            sortedEdges.sort(Comparator.comparing(Edge::getTo));
 
             for (Edge edge : sortedEdges) {
-                System.out.print(edge.GetTo() + "(" + edge.GetWeight() + "), ");
+                System.out.print(edge.getTo() + "(" + edge.getWeight() + "), " );
             }
             System.out.println("\n");
         }
@@ -88,7 +88,6 @@ public class Graph {
                 }
             }
         }
-
         return isConnected;
     }
 
@@ -109,5 +108,45 @@ public class Graph {
             }
         }
     }
+
+
+    public void exclusiveGraph() {
+        // Sort nodes in descending order of the number of edges
+        List<Node> sortedNodes = new ArrayList<>(adjacencyList.keySet());
+        sortedNodes.sort((node1, node2) -> Integer.compare(adjacencyList.get(node2).size(), adjacencyList.get(node1).size()));
+
+        int currentGroup = 0;
+        sortedNodes.get(0).setGroup(0);
+        System.out.println(sortedNodes.get(0).getName() +" "+ sortedNodes.get(0).getGroup());
+
+        for (int i = 1; i < sortedNodes.size()-1; i++) {
+
+
+        }
+    }
+
+
+    public void printGroups() {
+        // Create a map to store nodes by their groups
+        Map<Integer, List<Node>> groups = new HashMap<>();
+
+        // Organize nodes into groups
+        for (Node node : adjacencyList.keySet()) {
+            int group = node.getGroup();
+            groups.putIfAbsent(group, new ArrayList<>());
+            groups.get(group).add(node);
+        }
+
+        // Print each group with its nodes
+        for (Map.Entry<Integer, List<Node>> entry : groups.entrySet()) {
+            System.out.print("Group " + entry.getKey() + ": ");
+            for (Node node : entry.getValue()) {
+                System.out.print(node.getName() + " ");
+            }
+            System.out.println();
+        }
+    }
+
+
 
 }
