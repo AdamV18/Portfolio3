@@ -115,13 +115,17 @@ public class Graph {
         List<Node> sortedNodes = new ArrayList<>(adjacencyList.keySet());
         sortedNodes.sort((node1, node2) -> Integer.compare(adjacencyList.get(node2).size(), adjacencyList.get(node1).size()));
 
-        int currentGroup = 0;
-        sortedNodes.get(0).setGroup(0);
+        int currentGroup = 1;
+        sortedNodes.get(0).setGroup(currentGroup);
         System.out.println(sortedNodes.get(0).getName() +" "+ sortedNodes.get(0).getGroup());
 
-        for (int i = 1; i < sortedNodes.size()-1; i++) {
-
-
+        for (int i = 1; i < sortedNodes.size(); i++) {
+            int group = 1;
+            while(!checkForGroup(group,sortedNodes.get(i))){
+                group++;
+            }
+            sortedNodes.get(i).setGroup(group);
+            System.out.println(sortedNodes.get(i).getName() +" "+ sortedNodes.get(i).getGroup());
         }
     }
 
@@ -145,6 +149,17 @@ public class Graph {
             }
             System.out.println();
         }
+    }
+
+    //helper method to tell if a node has a connected node with the given group
+    private boolean checkForGroup(int group, Node node){
+        List<Edge> list  = adjacencyList.get(node);
+        for (Edge edge : list) {
+            if(edge.getToNode().getGroup()==group){
+                return false;
+            }
+        }
+        return true;
     }
 
 

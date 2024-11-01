@@ -16,11 +16,11 @@ public class Main {
             g.addEdge(a[0],a[1],Integer.parseInt(a[2]));
             g.addEdge(a[1],a[0],Integer.parseInt(a[2]));
         }
-        g.printGraph();
+        //g.printGraph();
         //boolean connected = g.isConnected();
 
-        //g.exclusiveGraph();
-        //g.printGroups();
+        g.exclusiveGraph();
+        g.printGroups();
     }
 
     static ArrayList<String> loadStrings(String f){
