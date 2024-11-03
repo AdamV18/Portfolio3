@@ -16,7 +16,7 @@ public class Main {
         }
         graphCourse.printGraph();
 
-        //Task 2 - Is Graph connected
+        //Task 2 - Is Graph connected made a boolean for nothing now but could be used (?)
         boolean connected = graphCourse.isConnected(false);
 
         //Task 3 - Find Groups
