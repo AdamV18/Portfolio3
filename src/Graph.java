@@ -142,9 +142,55 @@ public class Graph {
 
 
     //       -------------------------------      Task 3      -------------------------------
-    //       -------------------------------      Task 4      -------------------------------
 
 
+    //generate the graph with Groups as Nodes and Edges the sum of Students between the groups
+    public Graph createExclusiveGraph() {
+
+        System.out.println("-Begin Task 3-\n");
+        // First, divide the nodes in the original graph into groups
+        divideGraphIntoGroups();
+
+        Graph newGraph = new Graph();
+
+        // Track groups that have already been added as nodes in the new graph
+        Map<Integer, Node> groupNodes = new HashMap<>();
+
+        //Create Group Nodes
+        for (Node node : adjacencyList.keySet()) {
+            int group = node.getGroup();
+
+            // Check if the group node already exists in the new graph
+            if (!groupNodes.containsKey(group)) {
+                // Create a new node for this group in the new graph
+                Node groupNode = new Node(Integer.toString(group));
+                newGraph.createNode(groupNode.getName());
+                newGraph.getOrCreateNode(groupNode.getName()).setGroup(group); //
+                groupNodes.put(group, groupNode);
+            }
+        }
+
+        // Calculate Edges between Groups
+        List<Integer> processedGroups = new ArrayList<>();
+        for (int group1 : groupNodes.keySet()) {
+            for (int group2 : groupNodes.keySet()) {
+                if (group1 < group2 && !processedGroups.contains(group2)) {
+                    // use helper method to calculate NumOfStudents
+                    int numberOfConnections = calculateStudentsBetweenGroups(group1, group2);
+
+                    // add only Edge, when there is min. 1 Connection
+                    if (numberOfConnections > 0) {
+                        newGraph.addEdge(Integer.toString(group1), Integer.toString(group2), numberOfConnections);
+                        newGraph.addEdge(Integer.toString(group2), Integer.toString(group1), numberOfConnections);
+                    }
+                }
+            }
+            processedGroups.add(group1);
+        }
+        System.out.println("-------------------------------End Task 3------------------------------- \n");
+        return newGraph;
+
+    }
 
     public void divideGraphIntoGroups() {
         // Sort nodes in descending order of the number of edges
@@ -198,53 +244,7 @@ public class Graph {
         return true;
     }
 
-    //generate the graph with Groups as Nodes and Edges the sum of Students between the groups
-    public Graph createExclusiveGraph() {
 
-        System.out.println("-Begin Task 3-\n");
-        // First, divide the nodes in the original graph into groups
-        divideGraphIntoGroups();
-
-        Graph newGraph = new Graph();
-
-        // Track groups that have already been added as nodes in the new graph
-        Map<Integer, Node> groupNodes = new HashMap<>();
-
-        //Create Group Nodes
-        for (Node node : adjacencyList.keySet()) {
-            int group = node.getGroup();
-
-            // Check if the group node already exists in the new graph
-            if (!groupNodes.containsKey(group)) {
-                // Create a new node for this group in the new graph
-                Node groupNode = new Node(Integer.toString(group));
-                newGraph.createNode(groupNode.getName());
-                newGraph.getOrCreateNode(groupNode.getName()).setGroup(group); //
-                groupNodes.put(group, groupNode);
-            }
-        }
-
-        // Calculate Edges between Groups
-        List<Integer> processedGroups = new ArrayList<>();
-        for (int group1 : groupNodes.keySet()) {
-            for (int group2 : groupNodes.keySet()) {
-                if (group1 < group2 && !processedGroups.contains(group2)) {
-                    // use helper method to calculate NumOfStudents
-                    int numberOfConnections = calculateStudentsBetweenGroups(group1, group2);
-
-                    // add only Edge, when there is min. 1 Connection
-                    if (numberOfConnections > 0) {
-                        newGraph.addEdge(Integer.toString(group1), Integer.toString(group2), numberOfConnections);
-                        newGraph.addEdge(Integer.toString(group2), Integer.toString(group1), numberOfConnections);
-                    }
-                }
-            }
-            processedGroups.add(group1);
-        }
-        System.out.println("-------------------------------End Task 3------------------------------- \n");
-        return newGraph;
-
-    }
 
     //helper method to calculate The weight between two groups
     private int calculateStudentsBetweenGroups(int group1, int group2) {
@@ -423,8 +423,6 @@ public class Graph {
             }
         }
     }
-
-
 
 
     // Methode, um den gesamten Graphen zu kopieren
