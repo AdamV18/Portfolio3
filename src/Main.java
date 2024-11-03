@@ -14,14 +14,14 @@ public class Main {
             graphCourse.addEdge(a[0],a[1],Integer.parseInt(a[2]));
             graphCourse.addEdge(a[1],a[0],Integer.parseInt(a[2]));
         }
-        //g.printGraph();
+        graphCourse.printGraph();
 
         //Task 2 - Is Graph connected
-        //boolean connected = g.isConnected();
+        boolean connected = graphCourse.isConnected(false);
 
         //Task 3 - Find Groups
         Graph groups = graphCourse.createExclusiveGraph();
-        //printGroup(groups, graphCourse);
+        //print(groups, graphCourse);
 
         //Task 4 - Find Timeslots
         Graph bestPathGraph = null;
@@ -67,8 +67,7 @@ public class Main {
         return list;
     }
 
-    //Print Method to print the Found Groups, this was genereted by ChatGPT
-    public static void printGroup(Graph graphCourse, Graph exclusiveGraph) {
+    public static void print(Graph graphCourse, Graph exclusiveGraph) {
         // Map to store subjects by group from the original graph (graphCourse)
         Map<Integer, List<String>> subjectsByGroup = new HashMap<>();
 

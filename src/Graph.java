@@ -45,7 +45,14 @@ public class Graph {
     }
 
 
+
+    //       -------------------------------      Task 1      -------------------------------
+
+
     public void printGraph() {
+
+        System.out.println("-Begin Task 1-\n");
+
         // Sort nodes in descending order of the number of edges
         List<Node> sortedNodes = new ArrayList<>(adjacencyList.keySet());
 
@@ -65,11 +72,19 @@ public class Graph {
             }
             System.out.println("\n");
         }
-        System.out.println("-------------------------------End------------------------------- \n");
+        System.out.println("-------------------------------End Task 1------------------------------- \n");
     }
 
+
+
+    //       -------------------------------      Task 2      -------------------------------
+
+
     // Method to check if the graph is connected using the DFS (depth first search) method from Lec16
-    public boolean isConnected() {
+    public boolean isConnected(boolean details) {
+
+        System.out.println("-Begin Task 2-\n");
+
         if (adjacencyList.isEmpty()) {
             System.out.println("The graph is empty.");
             return true;
@@ -80,7 +95,7 @@ public class Graph {
         System.out.println("Starting connectivity check from node: " + startNode.getName());
 
         // Using DFS (depth first search) traversal code
-        visitDepthFirst(startNode, visitedNodes);
+        visitDepthFirst(startNode, visitedNodes, details);
 
         // Display all visited nodes
         System.out.print("Visited nodes: ");
@@ -101,26 +116,32 @@ public class Graph {
                 }
             }
         }
+        System.out.println("-------------------------------End Task 2------------------------------- \n");
         return isConnected;
     }
 
     // Depth first search from Lec16 pdf
-    private void visitDepthFirst(Node v, Set<Node> visited) {
+    private void visitDepthFirst(Node v, Set<Node> visited, boolean details) {
         if (visited.contains(v)) return;
 
-        System.out.println("Visiting node: " + v.getName());
+        if(details){System.out.println("Visiting node: " + v.getName());}
         visited.add(v);
 
         for (Edge e : adjacencyList.get(v)) {
             Node neighbor = e.to;
             if (!visited.contains(neighbor)) {
-                System.out.println("Visited, moving to neighbor: " + neighbor.getName());
-                visitDepthFirst(neighbor, visited);
+                if(details){System.out.println("Visited, moving to neighbor: " + neighbor.getName());}
+                visitDepthFirst(neighbor, visited, details);
             } else {
-                System.out.println("Already visited neighbor: " + neighbor.getName());
+                if(details){System.out.println("Already visited neighbor: " + neighbor.getName());}
             }
         }
     }
+
+
+
+    //       -------------------------------      Task 3      -------------------------------
+    //       -------------------------------      Task 4      -------------------------------
 
 
     public void divideGraphIntoGroups() {
@@ -177,6 +198,9 @@ public class Graph {
 
     //generate the graph with Groups as Nodes and Edges the sum of Students between the groups
     public Graph createExclusiveGraph() {
+
+        System.out.println("-Begin Task 3-\n");
+
         // First, divide the nodes in the original graph into groups
         divideGraphIntoGroups();
 
@@ -217,6 +241,7 @@ public class Graph {
             processedGroups.add(group1);
         }
 
+        System.out.println("-------------------------------End Task 3------------------------------- \n");
         return newGraph;
 
     }
@@ -340,9 +365,7 @@ public class Graph {
     }
 
 
-
-
-    // method to duplicate graph to be able to work with out without beeing in place
+    // method to duplicate graph to be able to work without being in place
     public Graph duplicateGraph() {
         Graph copyGraph = new Graph();
 
