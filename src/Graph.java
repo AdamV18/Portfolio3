@@ -51,7 +51,7 @@ public class Graph {
 
     public void printGraph() {
 
-        System.out.println("-Begin Task 1-\n");
+
 
 
         // Sort nodes in descending order of the number of edges
@@ -82,7 +82,7 @@ public class Graph {
             }
             System.out.println("\n");
         }
-        System.out.println("-------------------------------End Task 1------------------------------- \n");
+
     }
 
 
@@ -93,7 +93,7 @@ public class Graph {
     // Method to check if the graph is connected using the DFS (depth first search) method from Lec16
     public boolean isConnected(boolean details) {
 
-        System.out.println("-Begin Task 2-\n");
+
 
         if (adjacencyList.isEmpty()) {
             System.out.println("The graph is empty.");
@@ -126,7 +126,7 @@ public class Graph {
                 }
             }
         }
-        System.out.println("-------------------------------End Task 2------------------------------- \n");
+
         return isConnected;
     }
 
@@ -156,7 +156,7 @@ public class Graph {
     //generate the graph with Groups as Nodes and Edges the sum of Students between the groups
     public Graph createExclusiveGraph() {
 
-        System.out.println("-Begin Task 3-\n");
+
         // First, divide the nodes in the original graph into groups
         divideGraphIntoGroups();
 
@@ -196,7 +196,7 @@ public class Graph {
             }
             processedGroups.add(group1);
         }
-        System.out.println("-------------------------------End Task 3------------------------------- \n");
+
         return newGraph;
 
     }
@@ -351,6 +351,7 @@ public class Graph {
 
 
     public Graph calculatePathGraph(Node start) {
+
         // Dupliziere den ursprünglichen Graphen
         Graph pathGraph = duplicateGraph();
 

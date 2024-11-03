@@ -7,6 +7,7 @@ public class Main {
     public static void main(String[] args) {
 
         //Task 1 - Generate Graph
+        System.out.println("-------------------------------Begin Task 1------------------------------- \n");
         Graph graphCourse=new Graph();
 
         for(String s: loadStrings("combi.txt")){
@@ -17,13 +18,16 @@ public class Main {
         graphCourse.printGraph();
 
         //Task 2 - Is Graph connected - boolean parameter to print or no the details
+        System.out.println("-------------------------------Begin Task 2------------------------------- \n");
         boolean connected = graphCourse.isConnected(false);
 
         //Task 3 - Find Groups
+        System.out.println("-------------------------------Begin Task 3------------------------------- \n");
         Graph groups = graphCourse.createExclusiveGraph();
         printGroup(graphCourse, groups);
 
         //Task 4 - Find Timeslots
+        System.out.println("-------------------------------Begin Task 4------------------------------- \n");
         Graph bestPathGraph = null;
         int minimumWeight = Integer.MAX_VALUE;
         int startGroup = -1;
