@@ -16,12 +16,12 @@ public class Main {
         }
         graphCourse.printGraph();
 
-        //Task 2 - Is Graph connected made a boolean for nothing now but could be used (?)
+        //Task 2 - Is Graph connected - boolean parameter to print or no the details
         boolean connected = graphCourse.isConnected(false);
 
         //Task 3 - Find Groups
         Graph groups = graphCourse.createExclusiveGraph();
-        //print(groups, graphCourse);
+        //printGroup(groups, graphCourse);
 
         //Task 4 - Find Timeslots
         Graph bestPathGraph = null;
@@ -67,7 +67,8 @@ public class Main {
         return list;
     }
 
-    public static void print(Graph graphCourse, Graph exclusiveGraph) {
+    //Print Method to print the Found Groups, this was genereted by ChatGPT
+    public static void printGroup(Graph graphCourse, Graph exclusiveGraph) {
         // Map to store subjects by group from the original graph (graphCourse)
         Map<Integer, List<String>> subjectsByGroup = new HashMap<>();
 
