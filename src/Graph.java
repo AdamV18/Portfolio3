@@ -60,9 +60,18 @@ public class Graph {
         //Collections.sort(sortedNodes, Comparator.comparing(Node::getName)); //Alphabetical order
         sortedNodes.sort((node1, node2) -> Integer.compare(adjacencyList.get(node2).size(), adjacencyList.get(node1).size())); //Edges order
 
+        /*
+        sortedNodes.sort((node1, node2) -> {  //Edge weight order
+            int weight1 = adjacencyList.get(node1).stream().mapToInt(Edge::getWeight).sum();
+            int weight2 = adjacencyList.get(node2).stream().mapToInt(Edge::getWeight).sum();
+            return Integer.compare(weight2, weight1); // Descending order
+        }); */
+
+
         for (Node node : sortedNodes) {
             int edgeCount = adjacencyList.get(node).size();
-            System.out.print(node + " (" + edgeCount + " edges, group " + node.getGroup() + " ) -> ");
+            int edgeWeight = adjacencyList.get(node).stream().mapToInt(Edge::getWeight).sum();
+            System.out.print(node + " (edges: " + edgeCount + " group " + node.getGroup() + " weight: " + edgeWeight + ") -> ");
 
             // Sort edges alphabetically by the destination node's name
             List<Edge> sortedEdges = new ArrayList<>(adjacencyList.get(node));
@@ -193,9 +202,19 @@ public class Graph {
     }
 
     public void divideGraphIntoGroups() {
-        // Sort nodes in descending order of the number of edges
+
         List<Node> sortedNodes = new ArrayList<>(adjacencyList.keySet());
+
+        // Sort nodes in descending order of the number of edges
         sortedNodes.sort((node1, node2) -> Integer.compare(adjacencyList.get(node2).size(), adjacencyList.get(node1).size()));
+
+        // Sort nodes in descending order of the total weight of their edges
+        /*
+        sortedNodes.sort((node1, node2) -> {
+            int weight1 = adjacencyList.get(node1).stream().mapToInt(Edge::getWeight).sum();
+            int weight2 = adjacencyList.get(node2).stream().mapToInt(Edge::getWeight).sum();
+            return Integer.compare(weight2, weight1); // Descending order
+        }); */
 
         int currentGroup = 1;
         sortedNodes.get(0).setGroup(currentGroup);
@@ -326,6 +345,11 @@ public class Graph {
         return trenchGraph;
     }*/
 
+
+
+    //       -------------------------------      Task 4      -------------------------------
+
+
     public Graph calculatePathGraph(Node start) {
         // Dupliziere den ursprünglichen Graphen
         Graph pathGraph = duplicateGraph();
@@ -340,13 +364,17 @@ public class Graph {
         while (currentNode != null) {
             currentNode.visit();
 
+            //System.out.println("Start node:"+ start.getName());
+
             // Finde den nächsten Nachbarn im Pfad
             Node nearestNeighbor = pathGraph.findNearestNeighbor(currentNode);
+
 
             if (nearestNeighbor == null || nearestNeighbor.getVisited()) {
                 break;
             }
 
+            //System.out.println("Neighbor node:"+ nearestNeighbor.getName());
             // Nur die Kante zum nächsten Nachbarn behalten, alle anderen Kanten löschen
             pathGraph.keepEdgeToNearestNeighbor(currentNode, nearestNeighbor);
 
@@ -438,6 +466,7 @@ public class Graph {
         }
         return copyGraph;
     }
+
 
     // Method to find the nearest neighbor of a given node based on edge weight
     public Node findNearestNeighbor(Node start) {

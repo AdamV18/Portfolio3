@@ -21,7 +21,7 @@ public class Main {
 
         //Task 3 - Find Groups
         Graph groups = graphCourse.createExclusiveGraph();
-        //printGroup(groups, graphCourse);
+        printGroup(graphCourse, groups);
 
         //Task 4 - Find Timeslots
         Graph bestPathGraph = null;
@@ -50,6 +50,8 @@ public class Main {
             System.out.println("No Path found.");
         }
     }
+
+
 
     static ArrayList<String> loadStrings(String f){
         ArrayList<String> list=new ArrayList<>();
