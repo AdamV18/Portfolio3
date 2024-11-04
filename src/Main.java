@@ -10,9 +10,11 @@ public class Main {
         System.out.println("-------------------------------Begin Task 1------------------------------- \n");
         Graph graphCourse=new Graph();
 
+
         for(String s: loadStrings("combi.txt")){
             String[] a= s.split(" , ");
             graphCourse.addEdge(a[0],a[1],Integer.parseInt(a[2]));
+
             graphCourse.addEdge(a[1],a[0],Integer.parseInt(a[2]));
         }
         graphCourse.printGraph();
