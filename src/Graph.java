@@ -223,15 +223,15 @@ public class Graph {
         List<Node> sortedNodes = new ArrayList<>(adjacencyList.keySet());
 
         // Sort nodes in descending order of the number of edges
-        sortedNodes.sort((node1, node2) -> Integer.compare(adjacencyList.get(node2).size(), adjacencyList.get(node1).size()));
+        //sortedNodes.sort((node1, node2) -> Integer.compare(adjacencyList.get(node2).size(), adjacencyList.get(node1).size()));
 
         // Sort nodes in descending order of the total weight of their edges
-        /*
+
         sortedNodes.sort((node1, node2) -> {
             int weight1 = adjacencyList.get(node1).stream().mapToInt(Edge::getWeight).sum();
             int weight2 = adjacencyList.get(node2).stream().mapToInt(Edge::getWeight).sum();
             return Integer.compare(weight2, weight1); // Descending order
-        }); */
+        });
 
         // Sort nodes first by the number of edges, then by the total weight of edges if the counts are the same
         /*
@@ -310,55 +310,6 @@ public class Graph {
     }
 
 
-    // Methode, um den Pfad zu berechnen und nur die Knoten und Kanten im Pfad zurückzugeben
-    /*public Graph calculatePathGraph(Node start) {
-
-        Graph trenchGraph = duplicateGraph(); // Kopiert den ursprünglichen Graphen
-        Set<Node> visitedNodes = new HashSet<>(); // Speichert die besuchten Nodes
-
-        Node currentNode = start;
-
-        while (currentNode != null) {
-            currentNode.visit();
-            //visitedNodes.add(currentNode); // Markiere den aktuellen Node als besucht
-
-            // Finde den nächstgelegenen Nachbarn
-            Node nearestNeighbor = findNearestNeighbor(currentNode);
-
-            // Abbruch, wenn es keinen weiteren Nachbarn gibt oder der Nachbar bereits besucht wurde
-            if (nearestNeighbor == null || nearestNeighbor.getVisited()) {
-                break;
-            }
-
-            // Hole die Kantenliste aus trenchGraph, falls sie existiert
-            List<Edge> edges = trenchGraph.getAdjacencyList().get(currentNode);
-            System.out.println("Current node: " + currentNode.getName());
-            System.out.println("Edges in trenchGraph for current node: " + trenchGraph.getAdjacencyList().size());
-
-            if (edges == null) {
-                //edges = new ArrayList<>(); // Initialisiere eine leere Liste, wenn keine Kanten existieren
-                //trenchGraph.getAdjacencyList().put(currentNode, edges);
-                System.out.println("Edge list is empty.");
-                return trenchGraph;
-            }
-
-            // Behalte nur die Kante zum nächstgelegenen Nachbarn
-            List<Edge> edgesToKeep = new ArrayList<>();
-            for (Edge edge : edges) {
-                if (edge.getTo().equals(nearestNeighbor.getName())) {
-                    edgesToKeep.add(edge);
-                }
-            }
-            trenchGraph.getAdjacencyList().put(currentNode, edgesToKeep);
-
-            // Setze den nächsten Nachbarn als aktuellen Node für die nächste Iteration
-            currentNode = nearestNeighbor;
-        }
-
-        return trenchGraph;
-    }*/
-
-
 
     //       -------------------------------      Task 4      -------------------------------
 
@@ -370,6 +321,7 @@ public class Graph {
 
         // Hole den Startknoten im duplizierten Graphen
         Node currentNode = pathGraph.getNodeByName(start.getName());
+        Node previousNode = null;
 
         // Set für besuchte Knoten, um Zyklen zu vermeiden
         Set<Node> visitedNodes = new HashSet<>();
@@ -378,15 +330,17 @@ public class Graph {
         while (currentNode != null) {
             currentNode.visit();
 
-            //System.out.println("Start node:"+ start.getName());
+
 
             // Finde den nächsten Nachbarn im Pfad
             Node nearestNeighbor = pathGraph.findNearestNeighbor(currentNode);
 
 
+
             if (nearestNeighbor == null || nearestNeighbor.getVisited()) {
                 break;
             }
+
 
             //System.out.println("Neighbor node:"+ nearestNeighbor.getName());
             // Nur die Kante zum nächsten Nachbarn behalten, alle anderen Kanten löschen
@@ -395,15 +349,16 @@ public class Graph {
             // Entferne alle eingehenden Kanten zu currentNode, außer der Kante vom nearestNeighbor
             pathGraph.removeIncomingEdgesToCurrentNode(currentNode, nearestNeighbor);
 
+
             // Setze currentNode auf den nächsten Nachbarn
+            previousNode = currentNode;
             currentNode = nearestNeighbor;
         }
 
         // Entferne die letzte verbleibende Kante, wenn es eine gibt
         if (currentNode != null) {
-            pathGraph.removeLastEdgeToCurrentNode(currentNode);
+            pathGraph.removeLastEdgeToCurrentNode(currentNode, previousNode);
         }
-
         // Gib den resultierenden Pfadgraphen zurück
         return pathGraph;
     }
@@ -457,20 +412,15 @@ public class Graph {
     }
 
     // helper method to remove last edge to current node
-    private void removeLastEdgeToCurrentNode(Node currentNode) {
-        for (Node node : adjacencyList.keySet()) {
-            List<Edge> nodeEdges = adjacencyList.get(node);
-            if (nodeEdges != null) {
-                nodeEdges.removeIf(edge -> edge.getToNode().equals(currentNode));
-            }
-        }
+    private void removeLastEdgeToCurrentNode(Node currentNode, Node previousNode) {
+        List<Edge> nodeEdge = adjacencyList.get(currentNode);
+        nodeEdge.removeIf(edge -> edge.getToNode().equals(previousNode));
     }
 
 
     // Methode, um den gesamten Graphen zu kopieren
     public Graph duplicateGraph() {
         Graph copyGraph = new Graph();
-
         // Kopiere Knoten und Kanten
         for (Node node : adjacencyList.keySet()) {
             copyGraph.createNode(node.getName());
