@@ -75,7 +75,7 @@ public class Main {
         return list;
     }
 
-    //Print Method to print the Found Groups, this was genereted by ChatGPT
+    //Print Method to print the Found Groups
     public static void printGroup(Graph graphCourse, Graph exclusiveGraph) {
         // Map to store subjects by group from the original graph (graphCourse)
         Map<Integer, List<String>> subjectsByGroup = new HashMap<>();
@@ -113,7 +113,7 @@ public class Main {
 
     }
 
-    //Print Method to print the final Path, this was genereted by ChatGPT
+    //Print Method to print the final Path
     public static void printPath(Graph pathGraph, Graph kursGraph, int startGroupId) {
         // Map to store subjects by group from kursGraph
         Map<Integer, List<String>> subjectsByGroup = new HashMap<>();
@@ -159,12 +159,5 @@ public class Main {
         }
         System.out.println("Total weight of the path: " + pathGraph.calculatePathWeight());
     }
-
-
-
-
-
-
-
 
 }

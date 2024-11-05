@@ -7,7 +7,7 @@ public class Graph {
         adjacencyList = new HashMap<>();
     }
 
-    // Methode, to get either an exisiting Node or generates one and adds it to the AdjacencyList
+    // Method, to get either an exisiting Node or generates one and adds it to the AdjacencyList
     public Node getOrCreateNode(String name) {
 
         // is there an exisiting Node?
@@ -22,7 +22,7 @@ public class Graph {
         return newNode;
     }
 
-    // Methode, to create Node and adds it to the AdjacencyList
+    // Method, to create Node and adds it to the AdjacencyList
     public void createNode(String name) {
 
         // is there an exisiting Node?
@@ -48,7 +48,7 @@ public class Graph {
     //       -------------------------------      Task 1      -------------------------------
 
 
-
+    //method, to print the graph
     public void printGraph() {
 
 
@@ -58,7 +58,7 @@ public class Graph {
         //Collections.sort(sortedNodes, Comparator.comparing(Node::getName)); //Alphabetical order
         sortedNodes.sort((node1, node2) -> Integer.compare(adjacencyList.get(node2).size(), adjacencyList.get(node1).size())); //Edges order
 
-        /*
+        /* Alternative to sort - edge weight
         sortedNodes.sort((node1, node2) -> {  //Edge weight order
             int weight1 = adjacencyList.get(node1).stream().mapToInt(Edge::getWeight).sum();
             int weight2 = adjacencyList.get(node2).stream().mapToInt(Edge::getWeight).sum();
@@ -67,7 +67,7 @@ public class Graph {
 
 
         // Sort nodes first by the number of edges, then by the total weight of edges if the counts are the same
-        /*
+        /* Alternative to sort - edge weight and total weight
         sortedNodes.sort((node1, node2) -> {
             int edgeCount1 = adjacencyList.get(node1).size();
             int edgeCount2 = adjacencyList.get(node2).size();
@@ -109,8 +109,6 @@ public class Graph {
 
     // Method to check if the graph is connected using the DFS (depth first search) method from Lec16
     public boolean isConnected(boolean details) {
-
-
 
         if (adjacencyList.isEmpty()) {
             System.out.println("The graph is empty.");
@@ -173,7 +171,6 @@ public class Graph {
     //generate the graph with Groups as Nodes and Edges the sum of Students between the groups
     public Graph createExclusiveGraph() {
 
-
         // First, divide the nodes in the original graph into groups
         divideGraphIntoGroups();
 
@@ -223,17 +220,17 @@ public class Graph {
         List<Node> sortedNodes = new ArrayList<>(adjacencyList.keySet());
 
         // Sort nodes in descending order of the number of edges
-        //sortedNodes.sort((node1, node2) -> Integer.compare(adjacencyList.get(node2).size(), adjacencyList.get(node1).size()));
+        sortedNodes.sort((node1, node2) -> Integer.compare(adjacencyList.get(node2).size(), adjacencyList.get(node1).size()));
 
-        // Sort nodes in descending order of the total weight of their edges
+        //Alternativ -  Sort nodes in descending order of the total weight of their edges
 
-        sortedNodes.sort((node1, node2) -> {
+        /*sortedNodes.sort((node1, node2) -> {
             int weight1 = adjacencyList.get(node1).stream().mapToInt(Edge::getWeight).sum();
             int weight2 = adjacencyList.get(node2).stream().mapToInt(Edge::getWeight).sum();
             return Integer.compare(weight2, weight1); // Descending order
-        });
+        });*/
 
-        // Sort nodes first by the number of edges, then by the total weight of edges if the counts are the same
+        // Alternativ - Sort nodes first by the number of edges, then by the total weight of edges if the counts are the same
         /*
         sortedNodes.sort((node1, node2) -> {
             int edgeCount1 = adjacencyList.get(node1).size();
@@ -316,64 +313,56 @@ public class Graph {
 
     public Graph calculatePathGraph(Node start) {
 
-        // Dupliziere den ursprünglichen Graphen
+        // Duplicate the graph, so we are not changing the exisiting graph
         Graph pathGraph = duplicateGraph();
 
-        // Hole den Startknoten im duplizierten Graphen
+        // Start with the start Node
         Node currentNode = pathGraph.getNodeByName(start.getName());
         Node previousNode = null;
 
-        // Set für besuchte Knoten, um Zyklen zu vermeiden
+        // Save the already visited Nodes, to prevent cycles
         Set<Node> visitedNodes = new HashSet<>();
 
-        // Traverse durch den Graphen und behalte nur den Pfad
+        // go trough the graph, and only keep the path
         while (currentNode != null) {
             currentNode.visit();
 
-
-
-            // Finde den nächsten Nachbarn im Pfad
+            //Find nearest neighbor in path
             Node nearestNeighbor = pathGraph.findNearestNeighbor(currentNode);
-
-
 
             if (nearestNeighbor == null || nearestNeighbor.getVisited()) {
                 break;
             }
 
-
-            //System.out.println("Neighbor node:"+ nearestNeighbor.getName());
-            // Nur die Kante zum nächsten Nachbarn behalten, alle anderen Kanten löschen
+            // Delete all other edges from current, except the one to the nearest neighbor
             pathGraph.keepEdgeToNearestNeighbor(currentNode, nearestNeighbor);
 
-            // Entferne alle eingehenden Kanten zu currentNode, außer der Kante vom nearestNeighbor
+            // Delete all incoming edges to current node, except the from the nearest neighbor
             pathGraph.removeIncomingEdgesToCurrentNode(currentNode, nearestNeighbor);
 
-
-            // Setze currentNode auf den nächsten Nachbarn
             previousNode = currentNode;
             currentNode = nearestNeighbor;
         }
 
-        // Entferne die letzte verbleibende Kante, wenn es eine gibt
+        // delete last remaining edge from last node to previous
         if (currentNode != null) {
             pathGraph.removeLastEdgeToCurrentNode(currentNode, previousNode);
         }
-        // Gib den resultierenden Pfadgraphen zurück
+
         return pathGraph;
     }
 
-
+    //Calculate the total path weight
     public int calculatePathWeight() {
         int totalWeight = 0;
 
-        // Iteriere über alle Knoten im Graphen
+        // Iterate over all Nodes
         for (Node node : adjacencyList.keySet()) {
             List<Edge> edges = adjacencyList.get(node);
 
-            // Addiere die Gewichte der Kanten, die als Teil des Pfads markiert sind
+            // Sum the total weight of the edges, that are marked as path
             for (Edge edge : edges) {
-                if (edge.getPath()) {  // Nur Kanten im Pfad berücksichtigen
+                if (edge.getPath()) {
                     totalWeight += edge.getWeight();
                 }
             }
@@ -418,7 +407,7 @@ public class Graph {
     }
 
 
-    // Methode, um den gesamten Graphen zu kopieren
+    // Method, to duplicate the whole graph
     public Graph duplicateGraph() {
         Graph copyGraph = new Graph();
         // Kopiere Knoten und Kanten
