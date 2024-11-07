@@ -153,7 +153,7 @@ public class Graph {
         visited.add(v);
 
         for (Edge e : adjacencyList.get(v)) {
-            Node neighbor = e.to;
+            Node neighbor = e.getToNode();
             if (!visited.contains(neighbor)) {
                 if(details){System.out.println("Visited, moving to neighbor: " + neighbor.getName());}
                 visitDepthFirst(neighbor, visited, details);
@@ -438,13 +438,13 @@ public class Graph {
         return nearestNeighbor;
     }
 
-    // Methode, um einen Node anhand seines Namens abzurufen
+    // Method, to get a Node with its name
     public Node getNodeByName(String name) {
         for (Node node : adjacencyList.keySet()) {
             if (node.getName().equals(name)) {
                 return node;
             }
         }
-        return null; // Falls kein Knoten mit dem angegebenen Namen existiert
+        return null; // if that Node doesn't exist
     }
 }
