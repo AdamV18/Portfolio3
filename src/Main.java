@@ -10,22 +10,23 @@ public class Main {
         System.out.println("-------------------------------Begin Task 1------------------------------- \n");
         Graph graphCourse=new Graph();
 
-
         for(String s: loadStrings("combi.txt")){
             String[] a= s.split(" , ");
             graphCourse.addEdge(a[0],a[1],Integer.parseInt(a[2]));
 
             graphCourse.addEdge(a[1],a[0],Integer.parseInt(a[2]));
         }
-        graphCourse.printGraph();
+        graphCourse.printGraph(1);
+
 
         //Task 2 - Is Graph connected - boolean parameter to print or no the details
         System.out.println("-------------------------------Begin Task 2------------------------------- \n");
         boolean connected = graphCourse.isConnected(false);
 
+
         //Task 3 - Find Groups
         System.out.println("-------------------------------Begin Task 3------------------------------- \n");
-        Graph groups = graphCourse.createExclusiveGraph();
+        Graph groups = graphCourse.createExclusiveGraph(1);
         printGroup(graphCourse, groups);
 
         //Task 4 - Find Timeslots

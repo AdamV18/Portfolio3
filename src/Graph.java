@@ -49,39 +49,41 @@ public class Graph {
 
 
     //method, to print the graph
-    public void printGraph() {
+    public void printGraph(int method) {
 
 
         // Sort nodes in descending order of the number of edges
         List<Node> sortedNodes = new ArrayList<>(adjacencyList.keySet());
 
-        //Collections.sort(sortedNodes, Comparator.comparing(Node::getName)); //Alphabetical order
-        sortedNodes.sort((node1, node2) -> Integer.compare(adjacencyList.get(node2).size(), adjacencyList.get(node1).size())); //Edges order
+        if (method ==1){ //Edges order
+            sortedNodes.sort((node1, node2) -> Integer.compare(adjacencyList.get(node2).size(), adjacencyList.get(node1).size()));
+        }
+        else if (method ==2){ //Alternative to sort - edge weight
+            sortedNodes.sort((node1, node2) -> {  //Edge weight order
+                int weight1 = adjacencyList.get(node1).stream().mapToInt(Edge::getWeight).sum();
+                int weight2 = adjacencyList.get(node2).stream().mapToInt(Edge::getWeight).sum();
+                return Integer.compare(weight2, weight1); // Descending order
+            });
+        }
+        else if(method ==3){ // Sort nodes first by the number of edges, then by the total weight of edges if the counts are the same
+            sortedNodes.sort((node1, node2) -> {
+                int edgeCount1 = adjacencyList.get(node1).size();
+                int edgeCount2 = adjacencyList.get(node2).size();
 
-        /* Alternative to sort - edge weight
-        sortedNodes.sort((node1, node2) -> {  //Edge weight order
-            int weight1 = adjacencyList.get(node1).stream().mapToInt(Edge::getWeight).sum();
-            int weight2 = adjacencyList.get(node2).stream().mapToInt(Edge::getWeight).sum();
-            return Integer.compare(weight2, weight1); // Descending order
-        }); */
+                if (edgeCount1 != edgeCount2) {
+                    return Integer.compare(edgeCount2, edgeCount1); // Sort by edge count in descending order
+                } else {
+                    // Calculate total weights for nodes with the same edge count
+                    int totalWeight1 = adjacencyList.get(node1).stream().mapToInt(Edge::getWeight).sum();
+                    int totalWeight2 = adjacencyList.get(node2).stream().mapToInt(Edge::getWeight).sum();
+                    return Integer.compare(totalWeight2, totalWeight1); // Sort by total weight in descending order
+                }
+            });
+        } else {
+            System.out.println("Print method not correct (1,2 or 3)");
+            return;
+        }
 
-
-        // Sort nodes first by the number of edges, then by the total weight of edges if the counts are the same
-        /* Alternative to sort - edge weight and total weight
-        sortedNodes.sort((node1, node2) -> {
-            int edgeCount1 = adjacencyList.get(node1).size();
-            int edgeCount2 = adjacencyList.get(node2).size();
-
-            if (edgeCount1 != edgeCount2) {
-                return Integer.compare(edgeCount2, edgeCount1); // Sort by edge count in descending order
-            } else {
-                // Calculate total weights for nodes with the same edge count
-                int totalWeight1 = adjacencyList.get(node1).stream().mapToInt(Edge::getWeight).sum();
-                int totalWeight2 = adjacencyList.get(node2).stream().mapToInt(Edge::getWeight).sum();
-                return Integer.compare(totalWeight2, totalWeight1); // Sort by total weight in descending order
-            }
-        });
-         */
 
 
 
@@ -169,10 +171,10 @@ public class Graph {
 
 
     //generate the graph with Groups as Nodes and Edges the sum of Students between the groups
-    public Graph createExclusiveGraph() {
+    public Graph createExclusiveGraph(int method) {
 
         // First, divide the nodes in the original graph into groups
-        divideGraphIntoGroups();
+        divideGraphIntoGroups(method);
 
         Graph newGraph = new Graph();
 
@@ -215,39 +217,44 @@ public class Graph {
 
     }
 
-    public void divideGraphIntoGroups() {
+    public void divideGraphIntoGroups(int method) {
 
         List<Node> sortedNodes = new ArrayList<>(adjacencyList.keySet());
 
-        // Sort nodes in descending order of the number of edges
-        sortedNodes.sort((node1, node2) -> Integer.compare(adjacencyList.get(node2).size(), adjacencyList.get(node1).size()));
+        if (method == 1){
+            // Sort nodes in descending order of the number of edges
+            sortedNodes.sort((node1, node2) -> Integer.compare(adjacencyList.get(node2).size(), adjacencyList.get(node1).size()));
+        }
+        else if (method == 2) { //Alternativ -  Sort nodes in descending order of the total weight of their edges
 
-        //Alternativ -  Sort nodes in descending order of the total weight of their edges
+            sortedNodes.sort((node1, node2) -> {
+                int weight1 = adjacencyList.get(node1).stream().mapToInt(Edge::getWeight).sum();
+                int weight2 = adjacencyList.get(node2).stream().mapToInt(Edge::getWeight).sum();
+                return Integer.compare(weight2, weight1); // Descending order
+            });
+        }
+        else if (method == 3) { // Alternativ - Sort nodes first by the number of edges, then by the total weight of edges if the counts are the same
+            sortedNodes.sort((node1, node2) -> {
+                int edgeCount1 = adjacencyList.get(node1).size();
+                int edgeCount2 = adjacencyList.get(node2).size();
 
-        /*sortedNodes.sort((node1, node2) -> {
-            int weight1 = adjacencyList.get(node1).stream().mapToInt(Edge::getWeight).sum();
-            int weight2 = adjacencyList.get(node2).stream().mapToInt(Edge::getWeight).sum();
-            return Integer.compare(weight2, weight1); // Descending order
-        });*/
+                if (edgeCount1 != edgeCount2) {
+                    return Integer.compare(edgeCount2, edgeCount1); // Sort by edge count in descending order
+                } else {
+                    // Calculate total weights for nodes with the same edge count
+                    int totalWeight1 = adjacencyList.get(node1).stream().mapToInt(Edge::getWeight).sum();
+                    int totalWeight2 = adjacencyList.get(node2).stream().mapToInt(Edge::getWeight).sum();
+                    return Integer.compare(totalWeight2, totalWeight1); // Sort by total weight in descending order
+                }
+            });
+        } else {
+            System.out.println("Divide graph method not correct (1,2 or 3)");
+            return;
+        }
 
-        // Alternativ - Sort nodes first by the number of edges, then by the total weight of edges if the counts are the same
-        /*
-        sortedNodes.sort((node1, node2) -> {
-            int edgeCount1 = adjacencyList.get(node1).size();
-            int edgeCount2 = adjacencyList.get(node2).size();
-
-            if (edgeCount1 != edgeCount2) {
-                return Integer.compare(edgeCount2, edgeCount1); // Sort by edge count in descending order
-            } else {
-                // Calculate total weights for nodes with the same edge count
-                int totalWeight1 = adjacencyList.get(node1).stream().mapToInt(Edge::getWeight).sum();
-                int totalWeight2 = adjacencyList.get(node2).stream().mapToInt(Edge::getWeight).sum();
-                return Integer.compare(totalWeight2, totalWeight1); // Sort by total weight in descending order
-            }
-        });
-         */
 
         int currentGroup = 1;
+
         sortedNodes.get(0).setGroup(currentGroup);
         //System.out.println(sortedNodes.get(0).getName() +" "+ sortedNodes.get(0).getGroup());
 
