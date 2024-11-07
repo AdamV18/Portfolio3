@@ -6,55 +6,64 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
 
-        //Task 1 - Generate Graph
-        System.out.println("-------------------------------Begin Task 1------------------------------- \n");
-        Graph graphCourse=new Graph();
+        for (int i = 1; i < 4; i++) {
 
-        for(String s: loadStrings("combi.txt")){
-            String[] a= s.split(" , ");
-            graphCourse.addEdge(a[0],a[1],Integer.parseInt(a[2]));
+            boolean detail = false; //false if we just want the results for task 4
+            int methodvalue = i; // 1=Edges Order ; 2=Weight Order ; 3) Edge + Weight Order
 
-            graphCourse.addEdge(a[1],a[0],Integer.parseInt(a[2]));
-        }
-        graphCourse.printGraph(1);
+            System.out.println("Method number :" + methodvalue);
 
+            //Task 1 - Generate Graph
+            System.out.println("-------------------------------Begin Task 1------------------------------- \n");
+            Graph graphCourse = new Graph();
 
-        //Task 2 - Is Graph connected - boolean parameter to print or no the details
-        System.out.println("-------------------------------Begin Task 2------------------------------- \n");
-        boolean connected = graphCourse.isConnected(false);
+            for (String s : loadStrings("combi.txt")) {
+                String[] a = s.split(" , ");
+                graphCourse.addEdge(a[0], a[1], Integer.parseInt(a[2]));
 
-
-        //Task 3 - Find Groups
-        System.out.println("-------------------------------Begin Task 3------------------------------- \n");
-        Graph groups = graphCourse.createExclusiveGraph(1);
-        printGroup(graphCourse, groups);
-
-        //Task 4 - Find Timeslots
-        System.out.println("-------------------------------Begin Task 4------------------------------- \n");
-        Graph bestPathGraph = null;
-        int minimumWeight = Integer.MAX_VALUE;
-        int startGroup = -1;
-
-        // to calculate the path for each node as start Node -> find best solution
-        for (Node startNode : groups.getAdjacencyList().keySet()) {
-            Graph pathGraph = groups.calculatePathGraph(startNode);
-
-            int pathWeight = pathGraph.calculatePathWeight();
-            System.out.println("Startgroup " + startNode.getGroup() + " has a weight of " + pathWeight);
-
-            if (pathWeight < minimumWeight) {
-                minimumWeight = pathWeight;
-                bestPathGraph = pathGraph;
-                startGroup = startNode.getGroup();
+                graphCourse.addEdge(a[1], a[0], Integer.parseInt(a[2]));
             }
-        }
+            if(detail) {graphCourse.printGraph(methodvalue);}
 
-        // Print out the best solution
-        if (bestPathGraph != null) {
-            System.out.println("Path with the less consecutive time slots (Students: " + minimumWeight + ", StartGroup: " + startGroup + ")");
-            printPath(bestPathGraph, graphCourse,startGroup);
-        } else {
-            System.out.println("No Path found.");
+
+            //Task 2 - Is Graph connected - boolean parameter to print or no the details
+            System.out.println("-------------------------------Begin Task 2------------------------------- \n");
+            if(detail) {boolean connected = graphCourse.isConnected(false);}
+
+
+            //Task 3 - Find Groups
+            System.out.println("-------------------------------Begin Task 3------------------------------- \n");
+            Graph groups = graphCourse.createExclusiveGraph(methodvalue);
+            if(detail){printGroup(graphCourse, groups);}
+
+            //Task 4 - Find Timeslots
+            System.out.println("-------------------------------Begin Task 4------------------------------- \n");
+            Graph bestPathGraph = null;
+            int minimumWeight = Integer.MAX_VALUE;
+            int startGroup = -1;
+
+            // to calculate the path for each node as start Node -> find best solution
+            for (Node startNode : groups.getAdjacencyList().keySet()) {
+                Graph pathGraph = groups.calculatePathGraph(startNode);
+
+                int pathWeight = pathGraph.calculatePathWeight();
+                if(detail){System.out.println("Startgroup " + startNode.getGroup() + " has a weight of " + pathWeight);}
+
+                if (pathWeight < minimumWeight) {
+                    minimumWeight = pathWeight;
+                    bestPathGraph = pathGraph;
+                    startGroup = startNode.getGroup();
+                }
+            }
+
+            // Print out the best solution
+            if (bestPathGraph != null) {
+                System.out.println("Path with the less consecutive time slots (Students: " + minimumWeight + ", StartGroup: " + startGroup + ")");
+                printPath(bestPathGraph, graphCourse, startGroup);
+                System.out.println("\n\n");
+            } else {
+                System.out.println("No Path found.");
+            }
         }
     }
 
