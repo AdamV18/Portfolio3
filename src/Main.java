@@ -6,35 +6,33 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
 
+        boolean detail = true; //false if we just want the results for task 4
+
+        //Task 1 - Generate Graph
+        System.out.println("-------------------------------Begin Task 1------------------------------- \n");
+        Graph graphCourse = new Graph();
+
+        for (String s : loadStrings("combi.txt")) {
+            String[] a = s.split(" , ");
+            graphCourse.addEdge(a[0], a[1], Integer.parseInt(a[2]));
+            graphCourse.addEdge(a[1], a[0], Integer.parseInt(a[2]));
+        }
+        if(detail) {graphCourse.printGraph(1);} // here can be also chosen which Order the graph should be printed - 1=Edges Order ; 2=Weight Order ; 3) Edge + Weight Order
+
+
+        //Task 2 - Is Graph connected - boolean parameter to print or no the details
+        System.out.println("-------------------------------Begin Task 2------------------------------- \n");
+        if(detail) {boolean connected = graphCourse.isConnected(false);}
+
         for (int i = 1; i < 4; i++) {
-
-            boolean detail = false; //false if we just want the results for task 4
             int methodvalue = i; // 1=Edges Order ; 2=Weight Order ; 3) Edge + Weight Order
-
-            System.out.println("Method number :" + methodvalue);
-
-            //Task 1 - Generate Graph
-            System.out.println("-------------------------------Begin Task 1------------------------------- \n");
-            Graph graphCourse = new Graph();
-
-            for (String s : loadStrings("combi.txt")) {
-                String[] a = s.split(" , ");
-                graphCourse.addEdge(a[0], a[1], Integer.parseInt(a[2]));
-
-                graphCourse.addEdge(a[1], a[0], Integer.parseInt(a[2]));
-            }
-            if(detail) {graphCourse.printGraph(methodvalue);}
-
-
-            //Task 2 - Is Graph connected - boolean parameter to print or no the details
-            System.out.println("-------------------------------Begin Task 2------------------------------- \n");
-            if(detail) {boolean connected = graphCourse.isConnected(false);}
-
+            Graph graphDuplicate = graphCourse.duplicateGraph();
+            System.out.println("-------------------------Method number: " + methodvalue+ " ------------------- \n");
 
             //Task 3 - Find Groups
             System.out.println("-------------------------------Begin Task 3------------------------------- \n");
-            Graph groups = graphCourse.createExclusiveGraph(methodvalue);
-            if(detail){printGroup(graphCourse, groups);}
+            Graph groups = graphDuplicate.createExclusiveGraph(methodvalue);
+            if(detail){printGroup(graphDuplicate, groups);}
 
             //Task 4 - Find Timeslots
             System.out.println("-------------------------------Begin Task 4------------------------------- \n");
@@ -58,8 +56,8 @@ public class Main {
 
             // Print out the best solution
             if (bestPathGraph != null) {
-                System.out.println("Path with the less consecutive time slots (Students: " + minimumWeight + ", StartGroup: " + startGroup + ")");
-                printPath(bestPathGraph, graphCourse, startGroup);
+                System.out.println("Path with the less consecutive time slots (Students: " + minimumWeight + ", StartGroup: " + startGroup + ")\n");
+                printPath(bestPathGraph, graphDuplicate, startGroup);
                 System.out.println("\n\n");
             } else {
                 System.out.println("No Path found.");
