@@ -27,7 +27,7 @@ public class Main {
         for (int i = 1; i < 4; i++) {
             int methodvalue = i; // 1=Edges Order ; 2=Weight Order ; 3) Edge + Weight Order
             Graph graphDuplicate = graphCourse.duplicateGraph();
-            System.out.println("-------------------------Method number: " + methodvalue+ " ------------------- \n");
+            System.out.println("\n\n-------------------------Method number: " + methodvalue+ " ------------------------- \n");
 
             //Task 3 - Find Groups
             System.out.println("-------------------------------Begin Task 3------------------------------- \n");
